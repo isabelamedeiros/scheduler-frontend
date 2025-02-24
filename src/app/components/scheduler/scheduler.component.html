@@ -1,1 +1,103 @@
-<p>scheduler works!</p>
+<mat-toolbar color="primary">
+  <span>Agendamento de Transferências Financeiras</span>
+</mat-toolbar>
+
+<div class="action-section">
+  <button mat-raised-button color="primary" (click)="loadSchedulers()">
+    <mat-icon>list</mat-icon>
+    Ver Agendamentos
+  </button>
+
+  <button mat-raised-button color="accent" (click)="showForm = !showForm">
+    <mat-icon>add</mat-icon>
+    Nova Transferência
+  </button>
+</div>
+
+<mat-card *ngIf="showForm" class="form-card">
+  <mat-card-header>
+    <mat-card-title>Agendar Nova Transferência</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="schedulerForm" (ngSubmit)="createScheduler()">
+      <div class="form-fields">
+        <mat-form-field appearance="outline">
+          <mat-label>Conta de Origem</mat-label>
+          <input matInput formControlName="originAccount" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Conta de Destino</mat-label>
+          <input matInput formControlName="destinationAccount" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Valor da Transferência</mat-label>
+          <input matInput type="number"  formControlName="transferValue" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Data de Agendamento</mat-label>
+          <input matInput type="date" formControlName="transferDate" required>
+        </mat-form-field>
+      </div>
+
+      <!-- <mat-form-field>
+        <mat-label>Data de Agendamento</mat-label>
+        <input matInput [matDatepicker]="picker">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <input matInput type="date" [(ngModel)]="newScheduler.schedulingDate" name="schedulingDate" required>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div> -->
+
+      <div class="form-actions">
+        <button mat-raised-button [disabled]="!schedulerForm.valid" color="primary" type="submit">Agendar</button>
+        <button mat-button type="button" (click)="resetForm()">Cancelar</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="showSchedulers" class="list-card">
+  <mat-card-header>
+    <mat-card-title>Transferências Agendadas</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <table mat-table [dataSource]="schedulers" class="mat-elevation-z8">
+      <ng-container matColumnDef="originAccount">
+        <th mat-header-cell *matHeaderCellDef> Conta de Origem </th>
+        <td mat-cell *matCellDef="let scheduler"> {{ scheduler.originAccount }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="destinationAccount">
+        <th mat-header-cell *matHeaderCellDef> Conta de Destino </th>
+        <td mat-cell *matCellDef="let scheduler"> {{ scheduler.destinationAccount }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="transferValue">
+        <th mat-header-cell *matHeaderCellDef> Valor da Transferência </th>
+        <td mat-cell *matCellDef="let scheduler"> {{ scheduler.transferValue | currency:"BRL" }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tax">
+        <th mat-header-cell *matHeaderCellDef> Taxa </th>
+        <td mat-cell *matCellDef="let scheduler"> {{ scheduler.tax | currency:"BRL" }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="transferDate">
+        <th mat-header-cell *matHeaderCellDef> Data da Transferência </th>
+        <td mat-cell *matCellDef="let scheduler"> {{ scheduler.transferDate | date: "dd/MM/yyyy" }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="schedulingDate">
+        <th mat-header-cell *matHeaderCellDef> Data de Agendamento </th>
+        <td mat-cell *matCellDef="let scheduler"> {{ scheduler.schedulingDate | date: "dd/MM/yyyy" }} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
